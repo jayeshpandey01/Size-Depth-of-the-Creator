@@ -1,4 +1,4 @@
-# Lunar Orbit Navigation Using Ellipse R-CNN and Crater Pattern Matching
+# Image based Search of Lunar craters from global mosaic
 
 "Lunar Orbit Navigation Using Ellipse R-CNN and Crater Pattern Matching" is an advanced concept that combines two techniques to enhance lunar navigation accuracy by recognizing craters from lunar surface images and using them as landmarks for orbit determination. Here's a breakdown of this idea:
 
