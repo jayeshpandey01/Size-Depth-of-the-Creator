@@ -1,38 +1,84 @@
-# Image based Search of Lunar craters from global mosaic
+# Size-Depth-of-the-Creator
 
-"Lunar Orbit Navigation Using Ellipse R-CNN and Crater Pattern Matching" is an advanced concept that combines two techniques to enhance lunar navigation accuracy by recognizing craters from lunar surface images and using them as landmarks for orbit determination. Here's a breakdown of this idea:
+A machine learning project focused on crater detection and analysis using synthetic datasets and deep learning models.
 
-### 1. **Ellipse R-CNN for Crater Detection**
-   - **Ellipse R-CNN** is a variation of the R-CNN (Region-based Convolutional Neural Network) model, adapted to detect elliptical shapes, which are a natural representation of craters in planetary images.
-   - **Why Elliptical Shapes?**: Due to camera angles and variations in lunar surface features, craters might not always appear as perfect circles in images. Instead, they tend to appear as ellipses, especially from an orbital perspective.
-   - **R-CNN Process**:
-     - **Region Proposal**: The R-CNN identifies potential crater locations in an image.
-     - **Feature Extraction**: It then extracts features from these regions to differentiate craters from other surface features.
-     - **Classification & Regression**: Finally, the model classifies the identified craters and fine-tunes the elliptical parameters to better fit their actual shape.
-   - **Purpose**: Detecting and localizing craters across multiple images helps build a catalog of crater landmarks that can be used for navigation.
+## Repository Structure
 
-### 2. **Crater Pattern Matching for Navigation**
-   - **Pattern Matching**: Once craters are detected using Ellipse R-CNN, the next step is to match these craters with a pre-existing database of known lunar craters. 
-   - **Why Craters?**: Craters are relatively stable, large, and distinct features on the lunar surface, making them excellent for navigation reference points.
-   - **Orbit Determination**: By comparing the observed craters with a catalog, the spacecraft's position and orientation (attitude) in its orbit can be accurately determined using pattern matching algorithms. This is similar to how GPS uses satellites as reference points on Earth.
-   - **Process**:
-     - Capture images from the spacecraft in orbit.
-     - Detect craters and their elliptical parameters using the Ellipse R-CNN.
-     - Match these detected craters with the pre-existing catalog of lunar craters.
-     - Use the positions of the matched craters to triangulate and update the spacecraft's position in orbit.
+- `create_dataset.py` – Script for generating datasets of crater images and associated ellipses using SurRender. Configurable parameters include image count, resolution, field of view, and more.
+- `train_model.py` – Script to train a crater detection model. Allows configuration of model backbone, training hyperparameters, dataset path, and loss metric.
+- `test_model.py` – Quick script to load and test a trained crater detection model.
+- `requirements.txt` – Python dependencies required for the project.
+- `blobs/` – Likely stores trained model weights or binary data.
+- `data/` – Presumed location for datasets.
+- `docs/` – Documentation files.
+- `notebooks/` – Jupyter notebooks for experimentation or analysis.
+- `src/` – Source code for model, data handling, and utilities.
+- `testing.ipynb` – Jupyter notebook for model testing or experimentation.
 
-### 3. **Advantages**
-   - **Improved Navigation Accuracy**: Traditional navigation systems (e.g., inertial sensors) can suffer from drift over time. Crater-based navigation can provide a reliable method to correct this drift using fixed surface landmarks.
-   - **Autonomy**: This technique allows for autonomous navigation, reducing the need for continuous communication with Earth-based tracking stations.
-   - **Resilience**: By relying on natural lunar features, the method is resilient to issues such as hardware malfunctions or communication delays.
+## Installation
 
-### 4. **Applications**
-   - **Lunar Missions**: This technique can be applied to future lunar orbiters, landers, or rovers that need precise positioning, especially in the absence of GPS-like systems on the Moon.
-   - **Long-Term Lunar Operations**: For sustained lunar exploration or the establishment of lunar bases, precise navigation is crucial for resource deployment, landing operations, and surface mapping.
+Install dependencies:
 
-### 5. **Challenges**
-   - **Crater Ambiguity**: Some craters might look very similar, making it difficult to distinguish between them without high-resolution data or additional features.
-   - **Environmental Factors**: Variations in lighting and shadows due to the Sun's position can impact the crater detection accuracy.
-   - **Computational Load**: Real-time detection, feature extraction, and pattern matching can be computationally intensive, especially onboard spacecraft with limited processing power.
+```bash
+pip install -r requirements.txt
+```
 
-This approach integrates computer vision and machine learning for advanced lunar navigation, potentially revolutionizing how spacecraft navigate autonomously in space environments.
+## Dataset Creation
+
+To generate a new crater dataset:
+
+```bash
+python create_dataset.py --n_train 20000 --n_val 2000 --n_test 1000
+```
+Additional arguments (with defaults):
+- `--identifier`: Set a custom identifier for the dataset.
+- `--resolution`, `--fov`: Camera settings.
+- `--min_sol_incidence`, `--max_sol_incidence`: Solar incidence angle range.
+- `--ellipse_limit`: Maximum ellipticity for ground-truth ellipses.
+- `--filled`, `--mask_thickness`: Mask configuration.
+
+## Training
+
+To train the crater detection model:
+
+```bash
+python train_model.py --epochs 20 --batch_size 32 --dataset data/dataset_crater_detection_80k.h5
+```
+
+Other important arguments:
+- `--backbone`: Model backbone (default: resnet50)
+- `--ellipse_loss_metric`: Ellipse loss metric (`gaussian-angle`, `kullback-leibler`)
+- `--device`: Device to use (`cuda` or `cpu`)
+- `--learning_rate`, `--momentum`, `--weight_decay`: Optimizer parameters.
+
+## Testing
+
+To test a trained model:
+
+```bash
+python test_model.py
+```
+
+Make sure the trained weights (`blobs/CraterRCNN.pth`) are available.
+
+## Requirements
+
+See `requirements.txt` for all dependencies, including:
+- numpy, pandas, matplotlib
+- torch, torchvision, onnx
+- scikit-learn, networkx, tqdm, h5py, astropy, mlflow, etc.
+- SurRender API client
+
+## Notes
+
+- You may need to adjust paths and parameters according to your data and environment.
+- The project relies on the SurRender software for generating synthetic crater images.
+
+## Further Information
+
+- For more details, explore the `docs/` and `notebooks/` directories.
+- For the full file structure, see the [repository on GitHub](https://github.com/jayeshpandey01/Size-Depth-of-the-Creator/tree/main/).
+
+---
+
+*This README was auto-generated based on top-level files and scripts visible from the repository root. For a complete overview, please review all project files and documentation.*
